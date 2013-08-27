@@ -1,0 +1,10 @@
+{
+	"code": [
+		"PushNotificationPlugin.h",
+		"PushNotificationPlugin.mm",
+		"TeaLeafAppDelegate+Push.h",
+		"TeaLeafAppDelegate+Push.mm"
+	],
+	"frameworks": [
+	]
+}
