@@ -40,4 +40,16 @@
     // this looks like recursion, but because the insides of the methods are swapped, we are actually calling the original implementation of the method
     [self customApplication:application didFailToRegisterForRemoteNotificationsWithError:error];
 }
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
+	NSLog(@"userInfo:%@",[userInfo description]);
+	NSLog(@"alert:%@",[[userInfo objectForKey:@"aps"] objectForKey:@"alert"]);
+	NSLog(@"gameID:%@",[[userInfo objectForKey:@"aps"] objectForKey:@"gameID"]);
+	NSLog(@"playerID:%@",[[userInfo objectForKey:@"aps"] objectForKey:@"playerID"]);
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
+	   @"customURLPlugin",@"name",
+       @"handleURL", @"method",
+       [[userInfo objectForKey:@"aps"] objectForKey:@"gameID"], @"gameID",
+       [[userInfo objectForKey:@"aps"] objectForKey:@"playerID"], @"playerID", nil];
+}
 @end
