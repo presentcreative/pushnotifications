@@ -22,6 +22,8 @@ You still need to set up a valid provisioning profile for the app and certificat
 
 Push notifications can be tested with simplepush.php, for more info visit www.raywenderlich.com/32960/apple-push-notification-services-in-ios-6-tutorial-part-1
 
+Push notifications are received and forwarded to JS code. edit install.js after "if (e.method == "handleURL") {" to utilize any data included in the PN dictionary (converted to a JSON object).
+
 ~~~
 
 ## Platform-specific notes

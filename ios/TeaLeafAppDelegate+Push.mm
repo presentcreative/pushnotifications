@@ -42,14 +42,6 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
-	NSLog(@"userInfo:%@",[userInfo description]);
-	NSLog(@"alert:%@",[[userInfo objectForKey:@"aps"] objectForKey:@"alert"]);
-	NSLog(@"gameID:%@",[[userInfo objectForKey:@"aps"] objectForKey:@"gameID"]);
-	NSLog(@"playerID:%@",[[userInfo objectForKey:@"aps"] objectForKey:@"playerID"]);
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-	   @"customURLPlugin",@"name",
-       @"handleURL", @"method",
-       [[userInfo objectForKey:@"aps"] objectForKey:@"gameID"], @"gameID",
-       [[userInfo objectForKey:@"aps"] objectForKey:@"playerID"], @"playerID", nil];
+	[[PushNotificationPlugin get] sendNotificationToJS:userInfo];
 }
 @end

@@ -8,6 +8,7 @@
 
 + (PushNotificationPlugin*) get;
 - (void) sendTokenToJS;
+- (void) sendNotificationToJS:(NSDictionary *)userInfo;
 - (void) onRequest:(NSDictionary *)jsonObject;
 
 @end

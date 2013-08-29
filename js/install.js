@@ -5,6 +5,10 @@ var PushNotificationPlugin = Class(function () {
 			console.log("{PushNotificationJS} GC received token: "+e.token);
 			GLOBAL.pushToken = e.token;
 		}
+		if (e.method == "handleURL") {
+			//Edit here to utilize PN dictionary data
+			console.log("{PushNotificationJS} GC received notification - "+JSON.stringify(e));
+		}
 	});
 
 	//plugins.pushNotificationPlugin.clearBadge

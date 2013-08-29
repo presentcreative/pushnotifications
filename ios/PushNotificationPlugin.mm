@@ -47,6 +47,15 @@ static PushNotificationPlugin* instance = nil;
 										  nil]];
 }
 
+- (void) sendNotificationToJS:(NSDictionary *)userInfo {
+	NSLog(@"userInfo:%@",[userInfo description]);
+	NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithDictionary:[userInfo objectForKey:@"aps"]];
+    [dict setObject:@"pushNotificationPlugin" forKey:@"name"];
+    [dict setObject:@"handleURL" forKey:@"method"];
+    NSLog(@"sendDict: %@", [dict description]);
+	[[PluginManager get] dispatchJSEvent:dict];
+}
+
 - (void) onRequest:(NSDictionary *)jsonObject {
 	@try {
 		NSLOG(@"{pushNotificationPlugin} Got request");
