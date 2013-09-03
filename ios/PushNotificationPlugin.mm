@@ -20,26 +20,45 @@ static PushNotificationPlugin* instance = nil;
 	[super dealloc];
 }
 
++ (void)load {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createNotificationChecker:)
+                                                 name:@"UIApplicationDidFinishLaunchingNotification" object:nil];
+    
+}
+
++ (void)createNotificationChecker:(NSNotification *)notification
+{
+    NSDictionary *launchOptions = [notification userInfo] ;
+    
+    // This code will be called immediately after application:didFinishLaunchingWithOptions:.
+	NSDictionary *remoteNotificationDict = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (remoteNotificationDict) {
+        NSLog(@"remote PN received at launch");
+        [[PushNotificationPlugin get] handleRemoteNotification:remoteNotificationDict];
+    }else{
+        NSLog(@"no remote PN found, continue");
+    }
+}
+
 // The plugin must call super init.
 - (id) init {
 	self = [super init];
 	if (!self) {
 		return nil;
 	}
+    
 	// Let the device know we want to receive push notifications
-	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-		(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+
 	return self;
 }
 
 - (void) initializeWithManifest:(NSDictionary *)manifest appDelegate:(TeaLeafAppDelegate *)appDelegate {
 	NSLOG(@"{pushNotificationPlugin} Initialized with manifest");
-	if(self.token.length > 0)
-		[self sendTokenToJS];
 }
 
 - (void) sendTokenToJS {
-    NSLog(@"made it this far");
 	[[PluginManager get] dispatchJSEvent:[NSDictionary dictionaryWithObjectsAndKeys:
 										  @"pushNotificationPlugin",@"name",
                                           @"setToken", @"method",
@@ -52,8 +71,15 @@ static PushNotificationPlugin* instance = nil;
 	NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithDictionary:[userInfo objectForKey:@"aps"]];
     [dict setObject:@"pushNotificationPlugin" forKey:@"name"];
     [dict setObject:@"handleURL" forKey:@"method"];
-    NSLog(@"sendDict: %@", [dict description]);
 	[[PluginManager get] dispatchJSEvent:dict];
+}
+
+
+- (void) didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken application:(UIApplication *)app {
+	NSString* aToken = [NSString stringWithFormat:@"%@", deviceToken];
+	NSLog(@"{PushNotificationIOS} My token is: %@", deviceToken);
+	[self setToken:aToken];
+    [self sendTokenToJS];
 }
 
 - (void) onRequest:(NSDictionary *)jsonObject {
@@ -66,14 +92,20 @@ static PushNotificationPlugin* instance = nil;
 			NSLOG(@"{pushNotificationPlugin} Clearing Badge");
 			[[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
 		}
-		if ([method isEqualToString:@"otherFunc"]) {
-            // 			[[PluginManager get] dispatchJSEvent:[NSDictionary dictionaryWithObjectsAndKeys:
-            // 			@"geoloc",@"name", kCFBooleanTrue, @"failed", nil]];
-		}
 	}
 	@catch (NSException *exception) {
 		NSLOG(@"{pushNotificationPlugin} Exception while processing event: ", exception);
 	}
 }
-@end
 
+- (void) didReceiveRemoteNotification:(NSDictionary *)userInfo application:(UIApplication *)app {
+    NSLog(@"{pushNotificationPlugin} didReceiveRemoteNotification");
+    [self handleRemoteNotification:userInfo];
+}
+
+- (void)handleRemoteNotification:(NSDictionary *)userInfo{
+    NSLog(@"{pushNotificationPlugin} handling notification");
+	[[PushNotificationPlugin get] sendNotificationToJS:userInfo];
+}
+
+@end
