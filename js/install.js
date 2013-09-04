@@ -11,6 +11,9 @@ var PushNotificationPlugin = Class(function () {
 		}
 	});
 
+	var req = {method:"getToken"}
+	NATIVE.plugins.sendEvent("PushNotificationPlugin", "onRequest", JSON.stringify(req));
+
 	//plugins.pushNotificationPlugin.clearBadge
 	this.clearBadge = function() {	
 		console.log("{PushNotificationJS} Requesting Badge Clear");
