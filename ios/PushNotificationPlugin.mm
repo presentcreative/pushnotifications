@@ -5,7 +5,7 @@ static PushNotificationPlugin* instance = nil;
 
 @implementation PushNotificationPlugin
 
-@synthesize token;
+@synthesize token,PNDict;
 
 + (PushNotificationPlugin*) get {
 	if (!instance) {
@@ -98,6 +98,13 @@ static PushNotificationPlugin* instance = nil;
 		if ([method isEqualToString:@"getToken"]) {
 			[self sendTokenToJS];
 		}
+		if ([method isEqualToString:@"getPNDict"]) {
+			[self sendNotificationToJS:self.PNDict];
+		}
+		if ([method isEqualToString:@"clearPNDict"]) {
+            [self.PNDict release];
+			self.PNDict = nil;
+		}
 	}
 	@catch (NSException *exception) {
 		NSLOG(@"{pushNotificationPlugin} Exception while processing event: ", exception);
@@ -111,7 +118,7 @@ static PushNotificationPlugin* instance = nil;
 
 - (void)handleRemoteNotification:(NSDictionary *)userInfo{
     NSLog(@"{pushNotificationPlugin} handling notification");
-	[[PushNotificationPlugin get] sendNotificationToJS:userInfo];
+    self.PNDict = [NSMutableDictionary dictionaryWithDictionary:userInfo];
 }
 
 @end
