@@ -11,6 +11,7 @@
 + (PushNotificationPlugin*) get;
 - (void) sendTokenToJS;
 - (void) sendNotificationToJS:(NSDictionary *)userInfo;
+- (void) clearBadge:(NSDictionary *)jsonObject;
 - (void) onRequest:(NSDictionary *)jsonObject;
 - (void) didFailToRegisterForRemoteNotificationsWithError:(NSError *)error application:(UIApplication *)app;
 - (void) didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken application:(UIApplication *)app;

@@ -85,6 +85,27 @@ static PushNotificationPlugin* instance = nil;
 //    [self performSelector:@selector(sendTokenToJS) withObject:nil afterDelay:1.0];
 }
 
+- (void) clearBadge:(NSDictionary *)jsonObject {
+	NSLOG(@"{pushNotificationPlugin} Clearing Badge");
+	[[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];	
+}
+
+- (void) getToken:(NSDictionary *)jsonObject {
+	NSLOG(@"{pushNotificationPlugin} Returning token");
+	[self sendTokenToJS];
+}
+
+- (void) getPNDict:(NSDictionary *)jsonObject {
+	NSLOG(@"{pushNotificationPlugin} Returning dict");
+	[self sendNotificationToJS:self.PNDict];
+}
+
+- (void) clearPNDict:(NSDictionary *)jsonObject {
+	NSLOG(@"{pushNotificationPlugin} Clearing dict");
+	[self.PNDict release];
+	self.PNDict = nil;
+}
+
 - (void) onRequest:(NSDictionary *)jsonObject {
 	@try {
 		NSLOG(@"{pushNotificationPlugin} Got request");
@@ -93,7 +114,7 @@ static PushNotificationPlugin* instance = nil;
         
 		if ([method isEqualToString:@"clearBadge"]) {
 			NSLOG(@"{pushNotificationPlugin} Clearing Badge");
-			[[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+			[[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];	
 		}
 		if ([method isEqualToString:@"getToken"]) {
 			[self sendTokenToJS];
