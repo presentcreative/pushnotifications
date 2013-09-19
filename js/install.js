@@ -1,6 +1,6 @@
 function pluginSend(evt, params) {
 	NATIVE && NATIVE.plugins && NATIVE.plugins.sendEvent &&
-		NATIVE.plugins.sendEvent("FacebookPlugin", evt,
+		NATIVE.plugins.sendEvent("PushNotificationPlugin", evt,
 				JSON.stringify(params || {}));
 }
 
